@@ -1,4 +1,5 @@
 /// <reference types="Cypress"/>
+import { faker } from "@faker-js/faker";
 
 describe("class management tab", () => {
   beforeEach(() => {
@@ -11,45 +12,57 @@ describe("class management tab", () => {
     cy.get(".app-content h1").should("have.text", "Class Management");
   });
 
-  it("adds a new class", () => {
+  describe("New Class Form", () => {
     const myClass = {
-      name: "BrianClass2",
-      type: "cohort",
+      name: faker.company.buzzNoun(),
+      type: faker.helpers.arrayElement(["cohort", "attachment"]),
     };
 
-    cy.get("button").contains("New Class").click();
+    beforeEach(() => {
+      // navigate to the new class form
+      cy.get("button").contains("New Class").click();
+      cy.get("button").contains("Create/Update Class").as("CreateClassBtn");
+    });
 
-    // check whether page has changed
-    cy.get(".app-content h1").should("have.text", "Create New Class");
+    it("Navigates to the correct form", () => {
+      cy.get(".app-content h1").should("have.text", "Create New Class");
+    });
 
-    cy.getByPlaceholder("Class Name*").type(myClass.name);
-    cy.get(".p-dropdown-label").contains("Type of class").click();
-    cy.get(".p-dropdown-item").contains(myClass.type).click();
+    it("Gives an error if required fields are missing", () => {
+      cy.get("@CreateClassBtn").click();
+      cy.get("span").contains("Field is required").should("exist");
+    });
 
-    // for the start date
-    // TODO: implement a good way to set the date
-    //
+    it("Creates a new class successfully", () => {
+      cy.getByPlaceholder("Class Name*").type(myClass.name);
+      cy.get(".p-dropdown-label").contains("Type of class").click();
+      cy.get(".p-dropdown-item").contains(myClass.type).click();
 
-    cy.get(".p-calendar-w-btn-right input").eq(0).click();
-    cy.get(".p-datepicker").find("td").contains("10").first().click(); // 10th current month
+      // for the start date
+      // TODO: implement a good way to set the date
+      //
 
-    // for the end date
-    cy.get(".p-calendar-w-btn-right input").eq(1).click();
-    cy.get("td").contains("20").eq(-1).click(); // 20th current month
+      cy.get(".p-calendar-w-btn-right input").eq(0).click();
+      cy.get(".p-datepicker").find("td").contains("10").first().click(); // 10th current month
 
-    cy.get('input[inputmode="numeric"]').type(20);
+      // for the end date
+      cy.get(".p-calendar-w-btn-right input").eq(1).click();
+      cy.get("td").contains("20").eq(-1).click(); // 20th current month
 
-    cy.get(".p-dropdown-label").contains("Trainer").click();
-    cy.get(".p-dropdown-item").eq(0).click();
+      cy.get('input[inputmode="numeric"]').type(20);
 
-    cy.get("textarea").type("Class Description goes here");
+      cy.get(".p-dropdown-label").contains("Trainer").click();
+      cy.get(".p-dropdown-item").eq(0).click();
 
-    cy.get("button").contains("Create/Update Class").click();
+      cy.get("textarea").type("Class Description goes here");
 
-    //check if page navigates back
-    cy.url().should("include", "/class/management");
+      cy.get("@CreateClassBtn").click();
 
-    // assert that the new class is created and is inactive
-    cy.get(".p-datatable").eq(1).should("contain.text", myClass.name);
+      //check if page navigates back
+      cy.url().should("include", "/class/management");
+
+      // assert that the new class is created and is inactive
+      cy.get(".p-datatable").eq(1).should("contain.text", myClass.name);
+    });
   });
 });
