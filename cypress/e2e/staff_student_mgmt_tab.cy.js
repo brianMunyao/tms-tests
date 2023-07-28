@@ -2,12 +2,8 @@
 import { faker } from "@faker-js/faker";
 
 describe("staff/student management tab", () => {
-  // navigate to new staff form
   beforeEach(() => {
     cy.openStaffStudentTab();
-  });
-
-  it("visits the page succesfully", () => {
     cy.get(".app-content h1").should("have.text", "Staff & Student Management");
   });
 

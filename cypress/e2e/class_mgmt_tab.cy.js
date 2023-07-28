@@ -5,10 +5,6 @@ describe("class management tab", () => {
   beforeEach(() => {
     cy.visit("/");
     cy.get(".p-menuitem-link").contains("Class Management").click();
-  });
-
-  it("visits the page successfully", () => {
-    // check whether page has changed
     cy.get(".app-content h1").should("have.text", "Class Management");
   });
 
