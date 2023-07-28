@@ -54,8 +54,8 @@ Cypress.Commands.add("fillNewStaffForm", (staffInfo) => {
   cy.getByPlaceholder("Surname*").type(staffInfo.surname);
   cy.getByPlaceholder("Phone Number").eq(0).type(staffInfo.phoneNumber);
 
-  cy.get("span").contains("Trainer").click();
-  cy.get(".p-dropdown-item").eq(0).click();
+  cy.get("button[aria-label='Trainer']").click();
+  cy.get(".p-autocomplete-item").eq(0).click();
 
   /**
    * Class Assignment

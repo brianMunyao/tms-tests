@@ -30,9 +30,13 @@ describe("class management tab", () => {
     });
 
     it("Creates a new class successfully", () => {
-      cy.getByPlaceholder("Class Name*").type(myClass.name);
+      cy.getByPlaceholder("Class Name*").type(myClass.name, {
+        matchCase: false,
+      });
       cy.get(".p-dropdown-label").contains("Type of class").click();
-      cy.get(".p-dropdown-item").contains(myClass.type).click();
+      cy.get(".p-dropdown-item")
+        .contains(myClass.type, { matchCase: false })
+        .click();
 
       // for the start date
       // TODO: implement a good way to set the date

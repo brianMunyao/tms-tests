@@ -49,17 +49,21 @@ describe("staff/student management tab", () => {
   describe("New Staff Form", () => {
     const staffInfo = {
       email: faker.internet.email(),
-      password: faker.internet.password(),
+      password: faker.internet.password({ prefix: "Hello1." }),
       suffix: faker.helpers.arrayElement(["Mr", "Mrs", "Ms", "Dr", "Prof"]),
       firstName: faker.person.firstName(),
       surname: faker.person.lastName(),
       phoneNumber: faker.phone.number("2547########"),
     };
 
-    // navigate to new staff form
     beforeEach(() => {
       cy.getByTestId("add-new-staff-button").click();
       cy.get("button").contains("Save Changes").as("SaveChanges");
+
+      cy.intercept(
+        "POST",
+        "https://tms-staging-api.azurewebsites.net/staff"
+      ).as("insertStaff");
     });
 
     it("gives input error if required fields are missing", () => {
@@ -69,23 +73,19 @@ describe("staff/student management tab", () => {
       cy.get("span").contains("Field is required").should("exist");
     });
 
+    it("gives an error if password pattern is not matched", () => {
+      cy.fillNewStaffForm({ ...staffInfo, password: "12345678" });
+
+      cy.get("span").contains("Invalid password").should("exist");
+    });
+
     it("gives an error when the email given already exists", () => {
       cy.fillNewStaffForm({ ...staffInfo, email: "briantest@gmail.com" });
 
-      cy.intercept(
-        "POST",
-        "https://tms-staging-api.azurewebsites.net/staff"
-      ).as("insertStaff1");
-
-      cy.wait("@insertStaff1").its("response.statusCode").should("eq", 400);
+      cy.wait("@insertStaff").its("response.statusCode").should("eq", 400);
     });
 
     it("creates a new staff", () => {
-      cy.intercept(
-        "POST",
-        "https://tms-staging-api.azurewebsites.net/staff"
-      ).as("insertStaff");
-
       cy.fillNewStaffForm(staffInfo);
 
       cy.wait("@insertStaff", { timeout: 10000 })
