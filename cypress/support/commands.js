@@ -65,7 +65,7 @@ Cypress.Commands.add("fillNewStaffForm", (staffInfo) => {
   cy.get("span.p-dropdown-label").contains("Cohort").click();
   cy.get(".p-dropdown-item").eq(0).click();
 
-  // cy.get("button").contains("Save Changes").click();
+  cy.get("button").contains("Save Changes").click();
 });
 
 Cypress.Commands.add("fillNewStudentForm", (studentInfo) => {
@@ -104,7 +104,7 @@ Cypress.Commands.add("fillNewStudentForm", (studentInfo) => {
   cy.get("span").contains("Please select an option").eq(0).click();
   cy.get(".p-dropdown-item").first().click();
 
-  // cy.get("button").contains("Save Changes").click();
+  cy.get("button").contains("Save Changes").click();
 });
 
 Cypress.Commands.add("getElAndSetAlias", (selector, alias, index = 0) => {
