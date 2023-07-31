@@ -48,11 +48,11 @@ describe("class management tab", () => {
 
       // for the start date
       cy.get(".p-calendar-w-btn-right input").eq(0).click();
-      cy.get(".p-datepicker").find("td").contains("10").first().click(); // 10th current month
+      cy.selectDate("9-7-2023");
 
       // for the end date
       cy.get(".p-calendar-w-btn-right input").eq(1).click();
-      cy.get("td").contains("20").eq(-1).click(); // 20th current month
+      cy.selectDate("29-8-2024");
 
       cy.get('input[inputmode="numeric"]').type(20);
 

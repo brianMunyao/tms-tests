@@ -24,6 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import data from "../fixtures/data.json";
+
 Cypress.Commands.add("getByTestId", (testId, ...args) => {
   cy.get(`[data-testid=${testId}]`, ...args);
 });
@@ -63,7 +65,7 @@ Cypress.Commands.add("fillNewStaffForm", (staffInfo) => {
   cy.get("span.p-dropdown-label").contains("Cohort").click();
   cy.get(".p-dropdown-item").eq(0).click();
 
-  cy.get("button").contains("Save Changes").click();
+  // cy.get("button").contains("Save Changes").click();
 });
 
 Cypress.Commands.add("fillNewStudentForm", (studentInfo) => {
@@ -89,7 +91,7 @@ Cypress.Commands.add("fillNewStudentForm", (studentInfo) => {
 
   cy.get(".p-calendar-w-btn-right input").click();
 
-  cy.get(".p-datepicker").find("span").contains("20").click(); // 20th current month
+  cy.selectDate("20-8-2025");
 
   /**
    *
@@ -102,5 +104,65 @@ Cypress.Commands.add("fillNewStudentForm", (studentInfo) => {
   cy.get("span").contains("Please select an option").eq(0).click();
   cy.get(".p-dropdown-item").first().click();
 
-  cy.get("button").contains("Save Changes").click();
+  // cy.get("button").contains("Save Changes").click();
+});
+
+Cypress.Commands.add("getElAndSetAlias", (selector, alias, index = 0) => {
+  cy.get(selector).each(($el) => {
+    if (Cypress.$.isArray($el)) {
+      cy.wrap($el).eq(index).as(alias);
+    } else {
+      cy.wrap($el).as(alias);
+    }
+  });
+});
+
+Cypress.Commands.add("selectDate", (dateToPick, index = 0) => {
+  const dateInfo = dateToPick.split("-");
+  const months = data.months;
+
+  const day = dateInfo[0];
+  const month = months[dateInfo[1] - 1];
+  const year = dateInfo[2];
+
+  cy.getElAndSetAlias(".p-datepicker", "DatePicker", index);
+
+  cy.getElAndSetAlias("button.p-datepicker-prev", "PrevBtn", index);
+
+  cy.getElAndSetAlias("button.p-datepicker-next", "NextBtn", index);
+
+  cy.getElAndSetAlias(".p-datepicker-month", "Month", index);
+
+  cy.getElAndSetAlias(".p-datepicker-year", "Year", index);
+
+  let yearChanged = false;
+
+  //select year
+  cy.get("@Year").then((elem) => {
+    if (elem.text() !== year) {
+      cy.get("@Year").click();
+      cy.get(".p-yearpicker-year").contains(year).click();
+      yearChanged = true;
+    }
+    console.log(yearChanged);
+
+    if (yearChanged) {
+      cy.get(".p-monthpicker-month").contains(month.substring(0, 3)).click();
+    } else {
+      cy.get("@Month").then((elem) => {
+        if (elem.text() !== month) {
+          cy.get("@Month").click();
+          cy.get(".p-monthpicker-month")
+            .contains(month.substring(0, 3))
+            .click();
+        }
+      });
+    }
+
+    cy.get("@DatePicker")
+      .find("td")
+      .not(".p-datepicker-other-month")
+      .contains(day)
+      .click();
+  });
 });
