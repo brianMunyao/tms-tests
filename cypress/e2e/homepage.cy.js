@@ -48,9 +48,9 @@ describe("Homepage tests", () => {
         cy.get("h1").contains(oneCohort.name).should("exist");
       }
 
-      /**
-       * Update student grades
-       */
+      //
+      // Update student grades
+      //
 
       cy.get(".p-datatable-tbody")
         .find('tr[role="row"]')
@@ -89,9 +89,9 @@ describe("Homepage tests", () => {
         cy.get("h1").contains(oneAttachment.name).should("exist");
       }
 
-      /**
-       * Update student grades
-       */
+      //
+      // Update student grades
+      //
 
       cy.get(".p-datatable-tbody")
         .find('tr[role="row"]')
