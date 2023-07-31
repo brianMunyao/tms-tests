@@ -29,10 +29,9 @@ describe("Homepage tests", () => {
 
       const classes = res.response.body.results;
 
-      /**
-       *
-       * Open Cohort
-       */
+      //
+      // Open Cohort
+      //
       const cohorts = classes.filter(
         (c) => c.classType.classTypeName === "Cohort"
       );
@@ -50,10 +49,28 @@ describe("Homepage tests", () => {
       }
 
       /**
-       *
-       * Open Attachment
+       * Update student grades
        */
 
+      cy.get(".p-datatable-tbody")
+        .find('tr[role="row"]')
+        .eq(0)
+        .find("button.p-row-toggler")
+        .click();
+
+      cy.get(".p-datatable-row-expansion")
+        .contains("Professional Skills")
+        .should("exist");
+
+      cy.get(".p-datatable-row-expansion").find("button.p-button").click();
+
+      cy.get("h2").contains("Student Name").should("exist");
+
+      cy.fillGradesForm();
+
+      //
+      // Open Attachment
+      //
       const attachments = classes.filter(
         (c) => c.classType.classTypeName === "Attachment"
       );
@@ -71,6 +88,26 @@ describe("Homepage tests", () => {
 
         cy.get("h1").contains(oneAttachment.name).should("exist");
       }
+
+      /**
+       * Update student grades
+       */
+
+      cy.get(".p-datatable-tbody")
+        .find('tr[role="row"]')
+        .eq(0)
+        .find("button.p-row-toggler")
+        .click();
+
+      cy.get(".p-datatable-row-expansion")
+        .contains("Professional Skills")
+        .should("exist");
+
+      cy.get(".p-datatable-row-expansion").find("button.p-button").click();
+
+      cy.get("h2").contains("Student Name").should("exist");
+
+      cy.fillGradesForm();
     });
   });
 });

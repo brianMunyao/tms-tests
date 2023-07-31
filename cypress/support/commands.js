@@ -24,6 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import { faker } from "@faker-js/faker";
 import data from "../fixtures/data.json";
 
 Cypress.Commands.add("getByTestId", (testId, ...args) => {
@@ -33,6 +34,19 @@ Cypress.Commands.add("getByTestId", (testId, ...args) => {
 Cypress.Commands.add("getByPlaceholder", (placeholder, ...args) => {
   cy.get(`input[placeholder*="${placeholder}"]`, ...args);
 });
+
+Cypress.Commands.add("getByName", (name, ...args) => {
+  cy.get(`input[name="${name}"]`, ...args);
+});
+
+Cypress.Commands.add(
+  "clearThenType",
+  { prevSubject: true },
+  (originalFunc, element, text, options) => {
+    const newText = `{selectall}{backspace}${text}`;
+    return originalFunc(element, newText, options);
+  }
+);
 
 Cypress.Commands.add("openStaffStudentTab", () => {
   cy.visit("/");
@@ -165,4 +179,20 @@ Cypress.Commands.add("selectDate", (dateToPick, index = 0) => {
       .contains(day)
       .click();
   });
+});
+
+const clear = "{selectall}{backspace}";
+
+Cypress.Commands.add("fillGradesForm", () => {
+  const randomGrade = () =>
+    clear + faker.helpers.arrayElement([0, 1, 2, 3, 4, 5]);
+
+  cy.getByName("technicalSkills").type(randomGrade());
+  cy.getByTestId("professionalSkills-testid").type(randomGrade());
+  cy.getByTestId("reports-testid").type(randomGrade());
+  cy.getByTestId("assignments-testid").type(randomGrade());
+  cy.getByTestId("overallPerformance-testid").type(randomGrade());
+  cy.getByTestId("comments-testid").type(clear + faker.lorem.sentences(2));
+
+  cy.get("button").contains("Submit Grades").click();
 });
