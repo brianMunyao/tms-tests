@@ -3,6 +3,15 @@ import { faker } from "@faker-js/faker";
 
 describe("staff/student management tab", () => {
   beforeEach(() => {
+    cy.intercept("POST", "https://tms-staging-api.azurewebsites.net/staff").as(
+      "insertStaff"
+    );
+
+    cy.intercept(
+      "POST",
+      "https://tms-staging-api.azurewebsites.net/api/students"
+    ).as("insertStudent");
+
     cy.openStaffStudentTab();
     cy.get(".app-content h1").should("have.text", "Staff & Student Management");
   });
@@ -59,11 +68,6 @@ describe("staff/student management tab", () => {
     beforeEach(() => {
       cy.getByTestId("add-new-staff-button").click();
       cy.get("button").contains("Save Changes").as("SaveChanges");
-
-      cy.intercept(
-        "POST",
-        "https://tms-staging-api.azurewebsites.net/staff"
-      ).as("insertStaff");
     });
 
     it("gives input error if required fields are missing", () => {
@@ -127,11 +131,6 @@ describe("staff/student management tab", () => {
 
     it("creates a new student", () => {
       cy.fillNewStudentForm(studentInfo);
-
-      cy.intercept(
-        "POST",
-        "https://tms-staging-api.azurewebsites.net/api/students"
-      ).as("insertStudent");
 
       cy.wait("@insertStudent").its("response.statusCode").should("eq", 201);
     });
