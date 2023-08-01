@@ -30,6 +30,9 @@ import data from "../fixtures/data.json";
 Cypress.Commands.add("getByTestId", (testId, ...args) => {
   cy.get(`[data-testid=${testId}]`, ...args);
 });
+Cypress.Commands.add("getElByTestId", (testId, elem = "input") => {
+  cy.get(`${elem}[data-testid='${testId}']`);
+});
 
 Cypress.Commands.add("getByPlaceholder", (placeholder, ...args) => {
   cy.get(`input[placeholder*="${placeholder}"]`, ...args);

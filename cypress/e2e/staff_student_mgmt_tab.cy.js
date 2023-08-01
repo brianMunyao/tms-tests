@@ -1,6 +1,8 @@
 /// <reference types="Cypress"/>
 import { faker } from "@faker-js/faker";
 
+const testPassword = "Hello1.password";
+
 describe("staff/student management tab", () => {
   beforeEach(() => {
     cy.intercept("POST", "https://tms-staging-api.azurewebsites.net/staff").as(
@@ -14,14 +16,12 @@ describe("staff/student management tab", () => {
 
     cy.openStaffStudentTab();
     cy.get(".app-content h1").should("have.text", "Staff & Student Management");
+
+    cy.get('a[role="tab"]').contains("Students").as("StudentsTab");
+    cy.get('a[role="tab"]').contains("Staff").as("StaffTab");
   });
 
   describe("Search operations", () => {
-    beforeEach(() => {
-      cy.get('a[role="tab"]').contains("Students").as("StudentsTab");
-      cy.get('a[role="tab"]').contains("Staff").as("StaffTab");
-    });
-
     it("filters staff on search", () => {
       cy.get("@StaffTab").click();
       cy.getByTestId("staff-panel")
@@ -58,7 +58,8 @@ describe("staff/student management tab", () => {
   describe("New Staff Form", () => {
     const staffInfo = {
       email: faker.internet.email(),
-      password: faker.internet.password({ prefix: "Hello1." }),
+      password: testPassword,
+      // password: faker.internet.password({ prefix: "Hello1." }),
       suffix: faker.helpers.arrayElement(["Mr", "Mrs", "Ms", "Dr", "Prof"]),
       firstName: faker.person.firstName(),
       surname: faker.person.lastName(),
@@ -133,6 +134,59 @@ describe("staff/student management tab", () => {
       cy.fillNewStudentForm(studentInfo);
 
       cy.wait("@insertStudent").its("response.statusCode").should("eq", 201);
+    });
+  });
+
+  describe("User Update operations", () => {
+    it("can update staff details", () => {
+      cy.get("@StaffTab").click();
+      cy.get(".card")
+        .first()
+        .find("tbody tr")
+        .first()
+        .find("button")
+        .as("OpenStaffBtn");
+
+      cy.get("@OpenStaffBtn").click();
+
+      cy.getByName("email").should("be.disabled");
+      cy.getByTestId("test-id__back-btn").click();
+      cy.get("@OpenStaffBtn").click();
+
+      cy.get("button").contains("Edit").click();
+      cy.getByName("email").should("not.be.disabled").and("not.have.value", "");
+
+      cy.getByPlaceholder("Password").type(testPassword);
+
+      cy.get("button").contains("Update Changes").click();
+
+      //TODO: Check for update here
+    });
+
+    it("can update student details", () => {
+      cy.get("@StudentsTab").click();
+      cy.get(".card")
+        .first()
+        .find("tbody tr")
+        .first()
+        .find("button")
+        .as("OpenStudentBtn");
+
+      cy.get("@OpenStudentBtn").click();
+
+      cy.getByName("personalInformation.email").should("be.disabled");
+      cy.getElByTestId("test-id__back-btn", "button").click();
+      cy.get("@StudentsTab").click();
+      cy.get("@OpenStudentBtn").click();
+
+      cy.get("button").contains("Edit").click();
+      cy.getByName("personalInformation.email")
+        .should("not.be.disabled")
+        .and("not.have.value", "");
+
+      cy.get("button").contains("Save Changes").click();
+
+      //TODO: Check for update here
     });
   });
 });
