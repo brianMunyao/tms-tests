@@ -35,6 +35,19 @@ describe("class management tab", () => {
       cy.get("span").contains("Field is required").should("exist");
     });
 
+    it("Gives an error if end date is before start date", () => {
+      // for the start date
+      cy.get(".p-calendar-w-btn-right input").eq(0).click();
+      cy.selectDate("29-8-2024");
+
+      // for the end date
+      cy.get(".p-calendar-w-btn-right input").eq(1).click();
+      cy.selectDate("9-7-2023");
+
+      cy.get("@CreateClassBtn").click();
+      cy.get("span").contains("Date should be after").should("exist");
+    });
+
     it("Creates a new class successfully", () => {
       cy.getByPlaceholder("Class Name*").type(newClass.name, {
         matchCase: false,
@@ -43,8 +56,6 @@ describe("class management tab", () => {
       cy.get(".p-dropdown-item")
         .contains(newClass.type, { matchCase: false })
         .click();
-
-      // TODO: implement a good way to set the date
 
       // for the start date
       cy.get(".p-calendar-w-btn-right input").eq(0).click();
