@@ -199,3 +199,7 @@ Cypress.Commands.add("fillGradesForm", () => {
 
   cy.get("button").contains("Submit Grades").click();
 });
+
+Cypress.Commands.add("checkToast", (toastValue) => {
+  cy.get(".p-toast-detail").contains(toastValue).should("exist");
+});

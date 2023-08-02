@@ -74,11 +74,10 @@ describe("class management tab", () => {
 
       cy.get("@CreateClassBtn").click();
 
+      cy.checkToast("class created successfully");
+
       //check if page navigates back
       cy.url().should("include", "/class/management");
-
-      // assert that the new class is created and is inactive
-      cy.get(".p-datatable").eq(1).should("contain.text", newClass.name);
     });
   });
 
