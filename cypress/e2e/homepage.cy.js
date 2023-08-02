@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-const attachmentToTest = "Redux";
+const attachmentToTest = "Machine Learning with TensorFlow";
 const cohortToTest = "Internet of Things (IoT) Applications";
 
 describe("Homepage tests", () => {
