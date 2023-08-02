@@ -2,6 +2,8 @@
 import { faker } from "@faker-js/faker";
 import classes from "../fixtures/classes.json";
 
+const attachmentToTest = "Redux";
+
 describe("class management tab", () => {
   beforeEach(() => {
     cy.intercept(
@@ -82,19 +84,17 @@ describe("class management tab", () => {
   });
 
   describe("Actions on a class in the list", () => {
-    const classToTest = "Redux";
-
     beforeEach(() => {
       cy.wait("@getClasses"); // wait for the classes to be retrieved
 
-      cy.contains('tr[role="row"]', classToTest)
+      cy.contains('tr[role="row"]', attachmentToTest)
         .find("button")
         .as("optionsBtn");
 
       cy.get("@optionsBtn").click();
 
       cy.get(".p-dialog-title")
-        .contains(`${classToTest} Actions`)
+        .contains(`${attachmentToTest} Actions`)
         .should("exist");
     });
 
@@ -107,12 +107,14 @@ describe("class management tab", () => {
 
       // check if the correct page was opened with disabled inputs
       cy.get("input[name='details.className']").as("nameInput");
-      cy.get("@nameInput").should("have.value", classToTest).and("be.disabled");
+      cy.get("@nameInput")
+        .should("have.value", attachmentToTest)
+        .and("be.disabled");
 
       cy.get("button span").contains("Edit").click();
 
       cy.get("@nameInput")
-        .should("have.value", classToTest)
+        .should("have.value", attachmentToTest)
         .and("not.be.disabled");
 
       //TODO: Click update details
@@ -123,7 +125,7 @@ describe("class management tab", () => {
 
       // check if the correct page was opened with disabled inputs
       cy.get("input[name='details.className']")
-        .should("have.value", classToTest)
+        .should("have.value", attachmentToTest)
         .and("not.be.disabled");
 
       //TODO: Click update details

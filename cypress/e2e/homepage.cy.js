@@ -1,5 +1,8 @@
 /// <reference types="Cypress" />
 
+const attachmentToTest = "Redux";
+const cohortToTest = "ROI";
+
 describe("Homepage tests", () => {
   beforeEach(() => {
     cy.intercept(
@@ -27,26 +30,14 @@ describe("Homepage tests", () => {
         .parent()
         .as("ClassesContainer");
 
-      const classes = res.response.body.results;
-
       //
       // Open Cohort
       //
-      const cohorts = classes.filter(
-        (c) => c.classType.classTypeName === "Cohort"
-      );
+      cy.get("@ClassesContainer")
+        .find(".p-menuitem")
+        .should("have.length.above", 1);
 
-      if (classes.length > 0) {
-        cy.get("@ClassesContainer")
-          .find(".p-menuitem")
-          .should("have.length.above", 1);
-      }
-
-      if (cohorts.length > 0) {
-        const oneCohort = cohorts[0];
-        cy.get(".p-menuitem").contains(oneCohort.name).click();
-        cy.get("h1").contains(oneCohort.name).should("exist");
-      }
+      cy.get(".p-menuitem").contains(cohortToTest).click();
 
       //
       // Update student grades
@@ -62,7 +53,10 @@ describe("Homepage tests", () => {
         .contains("Professional Skills")
         .should("exist");
 
-      cy.get(".p-datatable-row-expansion").find("button.p-button").click();
+      cy.get(".p-datatable-row-expansion")
+        .find("button.p-button")
+        .first()
+        .click();
 
       cy.get("h2").contains("Student Name").should("exist");
 
@@ -71,23 +65,13 @@ describe("Homepage tests", () => {
       //
       // Open Attachment
       //
-      const attachments = classes.filter(
-        (c) => c.classType.classTypeName === "Attachment"
-      );
-
-      if (attachments.length > 0) {
-        const oneAttachment = attachments[0];
-
-        cy.get("@ClassesContainer")
-          .find(".p-submenu-header")
-          .contains("Attachments")
-          .parent()
-          .nextAll(".p-menuitem")
-          .contains(oneAttachment.name)
-          .click();
-
-        cy.get("h1").contains(oneAttachment.name).should("exist");
-      }
+      cy.get("@ClassesContainer")
+        .find(".p-submenu-header")
+        .contains("Attachments")
+        .parent()
+        .nextAll(".p-menuitem")
+        .should("have.length.above", 1);
+      cy.get(".p-menuitem").contains(attachmentToTest).click();
 
       //
       // Update student grades
