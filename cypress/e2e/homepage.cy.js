@@ -49,14 +49,9 @@ describe("Homepage tests", () => {
         .find("button.p-row-toggler")
         .click();
 
-      cy.get(".p-datatable-row-expansion")
-        .contains("Professional Skills")
-        .should("exist");
+      cy.get("span").contains("Professional Skills").should("exist");
 
-      cy.get(".p-datatable-row-expansion")
-        .find("button.p-button")
-        .first()
-        .click();
+      cy.get(".p-datatable-wrapper").find("button.p-button").first().click();
 
       cy.get("h2").contains("Student Name").should("exist");
 
@@ -83,11 +78,9 @@ describe("Homepage tests", () => {
         .find("button.p-row-toggler")
         .click();
 
-      cy.get(".p-datatable-row-expansion")
-        .contains("Professional Skills")
-        .should("exist");
+      cy.get("span").contains("Professional Skills").should("exist");
 
-      cy.get(".p-datatable-row-expansion").find("button.p-button").click();
+      cy.get(".p-datatable-wrapper").find("button.p-button").click();
 
       cy.get("h2").contains("Student Name").should("exist");
 
