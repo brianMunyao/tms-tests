@@ -97,7 +97,7 @@ Cypress.Commands.add("fillNewStudentForm", (studentInfo) => {
   cy.getByPlaceholder("Surname*").type(studentInfo.surname);
 
   cy.getByPlaceholder("Email Address").eq(0).type(studentInfo.email);
-  cy.getByPlaceholder("Phone Number").type(studentInfo.phoneNumber);
+  cy.getElByTestId("personalInformation.number").type(studentInfo.phoneNumber);
 
   /**
    *
@@ -114,11 +114,11 @@ Cypress.Commands.add("fillNewStudentForm", (studentInfo) => {
    *
    * TMS Class Section
    */
-  cy.get("span").contains("Please select an option").eq(0).click();
+  cy.get("span").contains("Please choose a student status").click();
   cy.get(".p-dropdown-item").first().click();
 
   //after the value above is selected this becomes the only span with that text
-  cy.get("span").contains("Please select an option").eq(0).click();
+  cy.get("span").contains("Please choose a class").click();
   cy.get(".p-dropdown-item").first().click();
 
   cy.get("button").contains("Save Changes").click();
