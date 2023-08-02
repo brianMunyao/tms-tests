@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 
 const attachmentToTest = "Redux";
-const cohortToTest = "ROI";
+const cohortToTest = "Internet of Things (IoT) Applications";
 
 describe("Homepage tests", () => {
   beforeEach(() => {
@@ -34,10 +34,10 @@ describe("Homepage tests", () => {
       // Open Cohort
       //
       cy.get("@ClassesContainer")
-        .find(".p-menuitem")
+        .find(".p-menuitem-link")
         .should("have.length.above", 1);
 
-      cy.get(".p-menuitem").contains(cohortToTest).click();
+      cy.get(".p-menuitem-link").contains(cohortToTest).click();
 
       //
       // Update student grades
@@ -66,7 +66,8 @@ describe("Homepage tests", () => {
         .parent()
         .nextAll(".p-menuitem")
         .should("have.length.above", 1);
-      cy.get(".p-menuitem").contains(attachmentToTest).click();
+
+      cy.get(".p-menuitem-link").contains(attachmentToTest).click();
 
       //
       // Update student grades
